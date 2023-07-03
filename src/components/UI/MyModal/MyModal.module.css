@@ -15,7 +15,7 @@
   min-width: 250px;
 }
 
-.myModal.active {
+.myModal .active {
   display: flex;
   justify-content: center;
   align-items: center;

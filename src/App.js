@@ -1,23 +1,32 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import PostList from "./components/PostList";
 import PostForm from "./components/PostForm";
 import PostFilter from "./components/PostFilter";
 import MyButton from "./components/UI/button/MyButton";
 import MyModal from "./components/UI/MyModal/MyModal";
 import { usePosts } from "./hooks/usePosts";
-import './styles/App.css'
+import './styles/App.css';
+import PostService from "./API/PostService";
+import Loader from "./components/UI/Loader/Loader";
 
 function App() {
   const [posts, setPosts] = useState([])
   const [filter, setFilter] = useState({ sort: '', query: '' })
   const [modal, setModal] = useState(false);
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
+  const [isPostsLoading, setIsPostsLoading] = useState(false)
+
+  useEffect(() => {
+    fetchPosts()
+  }, [])
 
   async function fetchPosts() {
-    const response = await axios.get('https://jsonplaceholder.typicode.com/posts')
-    setPosts(response.data)
-    console.log(response.data);
+    setIsPostsLoading(true);
+    setTimeout(async () => {
+      const posts = await PostService.getAll();
+      setPosts(posts);
+      setIsPostsLoading(false);
+    }, 1000);
   }
 
   const createPost = (newPost) => {
@@ -33,7 +42,6 @@ function App() {
   return (
     <div className="App">
       <button onClick={fetchPosts}>GET POSTS</button>
-
       <MyButton style={{ marginTop: 30 }} onClick={() => setModal(true)}>
         Create post
       </MyButton>
@@ -45,7 +53,10 @@ function App() {
         filter={filter}
         setFilter={setFilter}
       />
-      <PostList remove={removePost} posts={sortedAndSearchedPosts} title="Posts" />
+      {isPostsLoading
+        ? <Loader />
+        : <PostList remove={removePost} posts={sortedAndSearchedPosts} title="Posts" />
+      }
     </div >
   );
 }

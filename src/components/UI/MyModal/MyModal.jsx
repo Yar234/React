@@ -1,5 +1,5 @@
-import React from "react";
-import cl from "./MyModal.module.css"
+import React from 'react';
+import cl from './MyModal.module.css';
 
 const MyModal = ({ children, visible, setVisible }) => {
   const rootClasses = [cl.myModal]
@@ -13,7 +13,7 @@ const MyModal = ({ children, visible, setVisible }) => {
         {children}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default MyModal;
